@@ -2,7 +2,6 @@ package models
 
 import play.api.db.slick.Config.driver.simple._
 
-
 case class Song (
   name: String,
   genre: String,

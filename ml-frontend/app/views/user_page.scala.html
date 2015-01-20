@@ -1,0 +1,24 @@
+
+@import models.oauth2.OAuthApp
+
+@(user: User, apps: List[OAuthApp])(implicit request: Request[AnyContent])
+
+
+@main("user profile") {
+    <div class="col-md-10 col-md-offset-1">
+        <div class="panel">
+            <div class="panel-heading">Приложения</div>
+            <div class="panel-body">
+                <a href="@routes.Users.registerApp()" class="btn btn-primary">Новое приложение</a>
+                @for(app <- apps) {
+                    <div class="list-group margin-top-large">
+                        <div class="list-group-item">
+                            <div>@{app.id}</div>
+                            <div>@{app.secret}</div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}

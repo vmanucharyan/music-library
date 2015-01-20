@@ -1,0 +1,76 @@
+.background {
+    background: #f5f5f5;
+}
+
+
+
+.margin-small {
+     margin: 10px;
+ }
+
+.margin-top-small {
+    margin-top: 10px;
+}
+
+.margin-right-small {
+    margin-right: 10px;
+}
+
+.margin-left-small {
+    margin-left: 10px;
+}
+
+.margin-bottom-small {
+    margin-bottom: 10px;
+}
+
+
+.btn-a {
+    color: #ffffff;
+}
+
+.margin-large {
+    margin: 30px;
+}
+
+.margin-top-large {
+    margin-top: 30px;
+}
+
+.margin-right-large {
+    margin-right: 30px;
+}
+
+.margin-left-large {
+    margin-left: 30px;
+}
+
+.margin-bottom-large {
+    margin-bottom: 30px;
+}
+
+
+
+.margin-medium {
+    margin: 20px;
+}
+
+.margin-top-medium {
+    margin-top: 20px;
+}
+
+.margin-right-medium {
+    margin-right: 20px;
+}
+
+.margin-left-medium {
+    margin-left: 20px;
+}
+
+.margin-bottom-medium {
+    margin-bottom: 20px;
+}
+
+.signin-btn-size {
+    width: 125px;
+}

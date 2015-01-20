@@ -1,0 +1,18 @@
+@import models.oauth2.OAuthApp
+
+@(app: OAuthApp, clientId: String, redirectUri: String, state: String)(implicit request: Request[AnyContent])
+
+@main("grant access") {
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel">
+            <div class="panel-heading">ПОЛУЧЕНИЕ ДОСТУПА К ВАШЕМУ АККАУНТУ</div>
+            <div class="panel-body">
+                <h5>Приложение хочет получить доступ к вашему аккаунту</h5>
+                <div class="pull-right margin-top-large">
+                    <button class="btn btn-default">Отклонить</button>
+                    <a href="@{routes.OAuth.grantAccess(clientId, redirectUri, state).url}" class="btn btn-primary">Разрешить</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}

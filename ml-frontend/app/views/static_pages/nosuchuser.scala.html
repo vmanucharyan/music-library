@@ -1,0 +1,18 @@
+@()(implicit request: Request[AnyContent])
+
+@main("Ошибка авторизации") {
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                ОШИБКА АВТОРИЗАЦИИ
+            </div>
+            <div class="panel-body">
+                <h5>Неверный адрес электронной почты или пароль</h5>
+                <div class="pull-right margin-top-large">
+                    <button class="btn btn-default signin-btn-size"><a href="/">На главную</a></button>
+                    <button class="btn btn-primary"><a href="/signin" class="btn-a">Попробовать снова</a></button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
