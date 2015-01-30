@@ -5,7 +5,7 @@ import play.api.Play.current
 import play.api.db.slick._
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.slick.driver.H2Driver.simple._
+import play.api.db.slick.Config.driver.simple._
 
 object DataProvider {
   private val albums = TableQuery[AlbumsTable]
@@ -45,4 +45,8 @@ object DataProvider {
     DB.withSession(implicit s => Future {
       albums.filter(a => a.artistId === artistId).list
     })
+
+  def delete(id: Long) : Unit = DB.withSession(implicit session => {
+    albums.filter(a => a.id === id).delete
+  })
 }
