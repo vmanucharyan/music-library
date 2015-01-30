@@ -1,6 +1,7 @@
 package controllers
 
 import data.DataProvider
+import models.Artist
 import play.api.libs.json._
 import play.api.mvc._
 
@@ -46,4 +47,37 @@ object Artists extends Controller {
         )))
     }
   }
+
+
+  def insertArtist() = Action { implicit request =>
+    request.body.asJson match {
+      case Some(json) => try {
+        val artist = parseArtist(json)
+        val id = DataProvider.insertArtist(artist)
+        Ok(JsObject(Seq(
+          "message" -> JsString("success"),
+          "id" -> JsNumber(id)
+        )))
+      } catch {
+        case e: Exception => InternalServerError(JsObject(Seq("error" -> JsString(e.getMessage))))
+      }
+      case None => BadRequest(JsObject(Seq("error" -> JsString("empty body"))))
+    }
+  }
+  def updateArtist(id: Long) = Action { implicit request =>
+    request.body.asJson match {
+      case Some(json) => try {
+        val artist = parseArtist(json).copy(id = id)
+        DataProvider.updateArtist(artist)
+        Ok(JsObject(Seq("message" -> JsString("success"))))
+      } catch {
+        case e: Exception => InternalServerError(JsObject(Seq("error" -> JsString(e.getMessage))))
+      }
+      case None => BadRequest(JsObject(Seq("error" -> JsString("empty body"))))
+    }
+  }
+  private def parseArtist(js: JsValue): Artist = Artist (
+    name = (js \ "name").as[String],
+    description = (js \ "description").as[String]
+  )
 }

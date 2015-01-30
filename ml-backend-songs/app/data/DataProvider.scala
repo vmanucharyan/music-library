@@ -36,9 +36,18 @@ object DataProvider {
     })
   }
 
-  def insertSong(song: Song) (implicit context: ExecutionContext) : Unit = {
+  def songsOfArtist(artistId: Long) (implicit context: ExecutionContext) : Future[List[Song]] =
+    DB.withSession(implicit s => Future {
+      songs.filter(s => s.artistId === artistId).list
+    })
+
+  def insertSong(song: Song) : Long = {
     DB.withSession(implicit s => {
-      songs.insert(song)
+      (songs returning songs.map(song => song.id)).insert(song)
     })
   }
+
+  def updateSong(song: Song) : Unit = DB.withSession(implicit session => {
+    songs.filter(s => s.id === song.id).update(song)
+  })
 }

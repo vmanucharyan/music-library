@@ -24,15 +24,25 @@ object DataProvider {
     })
   }
 
-  def findAlbumByName(name: String) (implicit context: ExecutionContext) : Future[List[Album]] = Future {
-    DB.withSession(implicit s => {
+  def findAlbumByName(name: String) (implicit context: ExecutionContext) : Future[List[Album]] =
+    DB.withSession(implicit s => Future {
       albums.filter(a => a.name === name).list
+    })
+
+  def insertAlbum(album: Album) (implicit context: ExecutionContext) : Long = {
+    DB.withSession(implicit s => {
+      (albums returning albums.map(a => a.id)).insert(album)
     })
   }
 
-  def insertAlbum(album: Album) (implicit context: ExecutionContext) : Unit = {
-    DB.withSession(implicit s => Future {
-      albums.insert(album)
+  def updateAlbum(album: Album) : Unit = {
+    DB.withSession(implicit s => {
+      albums.filter(a => a.id === album.id).update(album)
     })
   }
+
+  def albumsOfArtist(artistId: Long) (implicit context: ExecutionContext) : Future[List[Album]] =
+    DB.withSession(implicit s => Future {
+      albums.filter(a => a.artistId === artistId).list
+    })
 }

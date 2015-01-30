@@ -24,9 +24,13 @@ object DataProvider {
     })
   }
 
-  def insertArtist(artist: Artist) : Unit = {
+  def insertArtist(artist: Artist) : Long = {
     DB.withSession(implicit s => {
-      artists.insert(artist)
+      (artists returning artists.map(a => a.id)).insert(artist)
     })
   }
+
+  def updateArtist(artist: Artist) : Unit = DB.withSession(implicit s => {
+    artists.filter(a => a.id === artist.id).update(artist)
+  })
 }

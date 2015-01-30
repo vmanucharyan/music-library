@@ -7,6 +7,7 @@ case class Song (
   genre: String,
   durationSec: Int,
   albumId: Long,
+  artistId: Long,
   id: Long = 0
 )
 
@@ -14,10 +15,11 @@ class SongsTable(tag: Tag) extends Table[Song](tag, "SONGS") {
   def name = column[String]("name")
   def genre = column[String]("genre")
   def durationSec = column[Int]("duration_sec")
-  def albumId = column[Long]("album")
+  def albumId = column[Long]("album_id")
+  def artistId = column[Long]("artist_id")
   def id = column[Long]("id", O.AutoInc, O.PrimaryKey)
 
   def albumFk = foreignKey("album_fk", albumId, TableQuery[SongsTable])(a => a.id)
 
-  def * = (name, genre, durationSec, albumId, id) <> (Song.tupled, Song.unapply)
+  def * = (name, genre, durationSec, albumId, artistId, id) <> (Song.tupled, Song.unapply)
 }
