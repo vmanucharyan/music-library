@@ -9,5 +9,5 @@ GET           /                      controllers.Application.index
 GET           /assets/*file          controllers.Assets.at(path="/public", file)
 
 POST          /session/new           controllers.Application.newSession()
-GET           /session/:id           controllers.Application.getSession(id: String)
+GET           /session               controllers.Application.getSession(id: String)
 DELETE        /session/delete        controllers.Application.deleteSession(id: String)
