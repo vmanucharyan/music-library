@@ -1,4 +1,4 @@
 package session
 
 
-case class Session(id: String, userId: String, authToken: String)
+case class Session(userId: String, authToken: String, id: Option[String])

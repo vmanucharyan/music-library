@@ -6,9 +6,11 @@ import play.api.libs.json._
 import play.api.Play.current
 
 import session.JsonRW._
-import session.Session
+import session.{SessionKeeper, RandomSessionIdGenerator, Session}
 
 object Application extends Controller {
+  val sessionIdGenerator = new RandomSessionIdGenerator()
+  val sessionKeeper = new SessionKeeper()
 
   def index = Action {
     Ok(views.html.index("Your new application is ready."))
@@ -18,9 +20,16 @@ object Application extends Controller {
     request.body.asJson match {
 
       case Some(jsValue) =>
-        val session = Json.fromJson[Session](jsValue)
-        Cache.set(session.id, session)
-        Ok(Json.obj("message" -> "success"))
+        Json.fromJson[Session](jsValue).asOpt match {
+
+          case Some(session) =>
+            val newSession = session.copy(id = Some(sessionIdGenerator.generate()))
+            sessionKeeper.storeSession(newSession)
+            Ok(Json.obj("message" -> "success", "id" -> newSession.id))
+
+          case None => BadRequest(Json.obj("error" -> "invalid json"))
+
+        }
 
       case None => BadRequest(Json.obj("error" -> "no json in body"))
     }
@@ -35,7 +44,7 @@ object Application extends Controller {
 
   def deleteSession(id: String) = Action {
     Cache.remove(id)
-    Ok("message" -> "success")
+    Ok(Json.obj("message" -> "success"))
   }
 
 }

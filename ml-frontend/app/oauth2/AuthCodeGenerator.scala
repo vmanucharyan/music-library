@@ -9,5 +9,5 @@ trait AuthCodeGenerator {
 
 class RandAuthCodeGenerator {
   def generate(): String =
-    String.join("", (Random.alphanumeric take 10) toArray)
+    String.join("", (Random.alphanumeric take 10).toArray)
 }
