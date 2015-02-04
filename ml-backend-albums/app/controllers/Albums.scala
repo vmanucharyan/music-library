@@ -50,8 +50,8 @@ object Albums extends Controller {
       case Some(json) =>
         try {
           val album = parseAlbum(json)
-          DataProvider.insertAlbum(album)
-          Ok(Json.obj("message" -> JsString("success")))
+          val newId = DataProvider.insertAlbum(album)
+          Ok(Json.obj("message" -> JsString("success"), "id" -> newId))
         }
         catch {
           case e: Exception => InternalServerError(JsObject(Seq("error" -> JsString(e.getMessage))))
