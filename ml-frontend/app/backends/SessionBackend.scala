@@ -22,7 +22,7 @@ class SessionBackend(val baseUrl: String) {
       (JsPath \ "id").writeNullable[String]
     ) (unlift(SessionInfo.unapply))
 
-  def getSession(id: String)(implicit app: Application, ec: ExecutionContext): Future[Option[SessionInfo]] = {
+  def getSession(id: String) (implicit app: Application, ec: ExecutionContext): Future[Option[SessionInfo]] = {
     val fullUrl = s"$baseUrl/session/$id"
 
     WS.url(fullUrl)
@@ -39,7 +39,7 @@ class SessionBackend(val baseUrl: String) {
       }
   }
 
-  def newSession(session: SessionInfo)(implicit app: Application, ec: ExecutionContext) : Future[String] = {
+  def newSession(session: SessionInfo) (implicit app: Application, ec: ExecutionContext) : Future[String] = {
     val fullUrl = s"$baseUrl/sessions/new"
 
     WS.url(fullUrl)
@@ -54,7 +54,7 @@ class SessionBackend(val baseUrl: String) {
       }
   }
 
-  def deleteSession(id: String)(implicit app: Application, ec: ExecutionContext) : Future[Unit] = {
+  def deleteSession(id: String) (implicit app: Application, ec: ExecutionContext) : Future[Unit] = {
     val fullUrl = s"$baseUrl/session/$id/delete"
 
     WS.url(fullUrl)

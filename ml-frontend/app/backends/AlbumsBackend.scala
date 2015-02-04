@@ -26,20 +26,45 @@ class AlbumsBackend(val baseUrl: String) {
     (JsPath \ "id").write[Long]
   ) (unlift(Album.unapply))
 
-  def getAlbum(id: Long) (implicit app: Application, ec: ExecutionContext) : Future[Album] =
-    WS.url(s"$baseUrl/albums/$id").get().map { response =>
+  def getArtistsAlbums(artistId: Long) (implicit app: Application, ec: ExecutionContext) : Future[List[Album]] =
+    WS.url(s"$baseUrl/albums/of_artist/$artistId").get() map { response =>
       response.status match {
-        case Status.OK => response.json.as[Album]
-        case Status.NOT_FOUND => throw new AlbumNotFoundException(s"album with id $id not found")
-        case status => throw new AlbumsBackendException(s"unexpected status code $status")
+        case Status.OK => response.json.as[List[Album]]
+        case status => throw new AlbumsBackendException(s"unexpected status code ($status)")
       }
     }
 
-  def postAlbum(album: Album) (implicit app: Application, ec: ExecutionContext) : Future[Unit] =
+  def getAlbum(id: Long) (implicit app: Application, ec: ExecutionContext) : Future[Album] =
+    WS.url(s"$baseUrl/albums/$id").get() map { response =>
+      response.status match {
+        case Status.OK => response.json.as[Album]
+        case Status.NOT_FOUND => throw new AlbumNotFoundException(s"album with id $id not found")
+        case status => throw new AlbumsBackendException(s"unexpected status code ($status)")
+      }
+    }
+
+  def postAlbum(album: Album) (implicit app: Application, ec: ExecutionContext) : Future[Long] =
     WS.url(s"$baseUrl/albums/new").post(Json.toJson(album)) map { response =>
       response.status match {
-        case Status.OK => Unit
+        case Status.OK => (response.json \ "id").as[Long]
         case status => throw new AlbumsBackendException("failed to create album")
+      }
+    }
+
+  def editAlbum(id: Long, album: Album) (implicit app: Application, ec: ExecutionContext) : Future[Boolean] =
+    WS.url(s"$baseUrl/albums/$id/update").put(Json.toJson(album)) map { response =>
+      response.status match {
+        case Status.OK => true
+        case Status.NOT_FOUND => throw new AlbumNotFoundException(s"album with id $id not found")
+        case status => throw new AlbumsBackendException(s"failed to edit album: unexpected status code ($status)")
+      }
+    }
+
+  def deleteAlbum(id: Long) (implicit app: Application, ec: ExecutionContext) : Future[Unit] =
+    WS.url(s"$baseUrl/albums/$id/delete").delete() map { response =>
+      response.status match {
+        case Status.OK => Unit
+        case status => throw new AlbumsBackendException(s"unexpected status code ($status)")
       }
     }
 }
