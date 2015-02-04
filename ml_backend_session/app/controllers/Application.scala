@@ -28,7 +28,6 @@ object Application extends Controller {
             Ok(Json.obj("message" -> "success", "id" -> newSession.id))
 
           case None => BadRequest(Json.obj("error" -> "invalid json"))
-
         }
 
       case None => BadRequest(Json.obj("error" -> "no json in body"))

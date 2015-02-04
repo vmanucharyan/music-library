@@ -8,10 +8,7 @@ import play.api.libs.functional.syntax._
 
 import scala.concurrent.{Future, ExecutionContext}
 
-class SessionBackend(val url: String,
-                     val getPath: String,
-                     val newPath :String,
-                     val deletePath: String) {
+class SessionBackend(val baseUrl: String) {
 
   implicit val sessionReads : Reads[SessionInfo] = (
       (JsPath \ "user_id").read[String] and
@@ -25,8 +22,8 @@ class SessionBackend(val url: String,
       (JsPath \ "id").writeNullable[String]
     ) (unlift(SessionInfo.unapply))
 
-  def getSession(id: String) (implicit app: Application, ec: ExecutionContext): Future[Option[SessionInfo]] = {
-    val fullUrl = url + getPath
+  def getSession(id: String)(implicit app: Application, ec: ExecutionContext): Future[Option[SessionInfo]] = {
+    val fullUrl = s"$baseUrl/session/$id"
 
     WS.url(fullUrl)
       .withQueryString("id" -> id)
@@ -42,12 +39,11 @@ class SessionBackend(val url: String,
       }
   }
 
-  def newSession(session: SessionInfo) : Future[String] = {
-    val fullUrl = url + newPath
+  def newSession(session: SessionInfo)(implicit app: Application, ec: ExecutionContext) : Future[String] = {
+    val fullUrl = s"$baseUrl/sessions/new"
 
     WS.url(fullUrl)
-      .withBody(Json.toJson[SessionInfo])
-      .execute("POST") map { response =>
+      .post(Json.toJson(session)) map { response =>
         response.status match {
           case Status.OK => (response.json \ "id").as[String]
           case status =>
@@ -58,8 +54,8 @@ class SessionBackend(val url: String,
       }
   }
 
-  def deleteSession(session: SessionInfo) : Future[Unit] = {
-    val fullUrl = url + newPath
+  def deleteSession(id: String)(implicit app: Application, ec: ExecutionContext) : Future[Unit] = {
+    val fullUrl = s"$baseUrl/session/$id/delete"
 
     WS.url(fullUrl)
       .execute("DELETE") map { response =>
@@ -74,6 +70,6 @@ class SessionBackend(val url: String,
   }
 }
 
-case class SessionInfo(userId: String, authToken: String, id: Option[String])
+case class SessionInfo(userId: String, authToken: String, id: Option[String] = None)
 
 class SessionBackendException(what: String) extends RuntimeException(what)

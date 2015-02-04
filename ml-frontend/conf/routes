@@ -3,26 +3,29 @@
 # ~~~~
 
 # Home page
-GET         /                             controllers.Application.index
+GET         /                                 controllers.Application.index
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                 controllers.Assets.at(path="/public", file)
+GET         /assets/*file                     controllers.Assets.at(path="/public", file)
 
 # user
-GET         /users                        controllers.Users.all
-GET         /users/me                     controllers.Users.me
-GET         /register_app                 controllers.Users.registerApp
+GET         /users                            controllers.Users.all
+GET         /users/me                         controllers.Users.me
+GET         /register_app                     controllers.Users.registerApp
 
 # sign in
-GET         /signin                       controllers.SignIn.signIn(redirect: Option[String] ?= None)
-POST        /signin/perform_signin        controllers.SignIn.performSignIn(redirect_uri: Option[String])
-GET         /sign_out                     controllers.SignIn.signOut()
+GET         /signin                           controllers.SignIn.signIn(redirect: Option[String] ?= None)
+POST        /signin/perform_signin            controllers.SignIn.performSignIn(redirect_uri: Option[String])
+GET         /sign_out                         controllers.SignIn.signOut()
 
 # OAuth2
-GET         /oauth2/auth                  controllers.OAuth.auth(client_id: String, redirect_uri: String, state: String)
-GET         /oauth2/grant_access          controllers.OAuth.grantAccess(client_id: String, redirect_uri: String, state: String)
-GET         /oauth2/token                 controllers.OAuth.token(code: String, client_id: String, client_secret: String, redirect_uri: String, grant_type:String)
+GET         /oauth2/auth                      controllers.OAuth.auth(client_id: String, redirect_uri: String, state: String)
+GET         /oauth2/grant_access              controllers.OAuth.grantAccess(client_id: String, redirect_uri: String, state: String)
+GET         /oauth2/token                     controllers.OAuth.token(code: String, client_id: String, client_secret: String, redirect_uri: String, grant_type:String)
 
 # register
 GET         /register                         controllers.Register.register
 POST        /register/perform_register        controllers.Register.performRegister
+
+# test
+GET         /session_test                     controllers.Application.sessionTest
