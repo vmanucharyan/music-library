@@ -112,7 +112,7 @@ object Songs extends Controller {
 
   def delete(id: Long) = Action { implicit request =>
     DataProvider.deleteSong(id)
-    Ok(Json.obj("error" -> "success"))
+    Ok(Json.obj("message" -> "success"))
   }
 
   private def parseSong(json: JsValue): Song = Song(
