@@ -3,14 +3,15 @@
 # ~~~~
 
 # Home page
-GET         /                                  controllers.Application.index
+GET           /                                  controllers.Application.index
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                      controllers.Assets.at(path="/public", file)
+GET           /assets/*file                      controllers.Assets.at(path="/public", file)
 
-GET         /songs                             controllers.Songs.all()
-GET         /songs/:id                         controllers.Songs.id(id: Int)
-GET         /songs/of_artist/:artist_id        controllers.Songs.ofArtist(artist_id: Long)
-GET         /songs/of_album/:album_id          controllers.Songs.ofAlbum(album_id: Long)
-POST        /songs/new                         controllers.Songs.insertSong()
-PUT         /songs/:id/update                  controllers.Songs.update(id: Long)
+GET           /songs                             controllers.Songs.all()
+GET           /songs/:id                         controllers.Songs.id(id: Int)
+GET           /songs/of_artist/:artist_id        controllers.Songs.ofArtist(artist_id: Long)
+GET           /songs/of_album/:album_id          controllers.Songs.ofAlbum(album_id: Long)
+POST          /songs/new                         controllers.Songs.insertSong()
+PUT           /songs/:id/update                  controllers.Songs.update(id: Long)
+DELETE        /songs/:id/delete                  controllers.Songs.delete(id: Long)

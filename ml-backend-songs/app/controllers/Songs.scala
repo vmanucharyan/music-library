@@ -92,7 +92,9 @@ object Songs extends Controller {
       case None => BadRequest(Json.obj("error" -> JsString("empty body")))
     }
   }
-  def update(id: Long) = Action.async { implicit request =>request.body.asJson match {
+
+  def update(id: Long) = Action.async { implicit request =>
+    request.body.asJson match {
       case Some(json) => DataProvider.getSong(id) map {
 
         case Some(song) =>
@@ -106,6 +108,11 @@ object Songs extends Controller {
 
       case None => Future(BadRequest(Json.obj("error" -> JsString("empty body"))))
     }
+  }
+
+  def delete(id: Long) = Action { implicit request =>
+    DataProvider.deleteSong(id)
+    Ok(Json.obj("error" -> "success"))
   }
 
   private def parseSong(json: JsValue): Song = Song(
