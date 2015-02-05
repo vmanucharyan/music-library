@@ -31,3 +31,4 @@ POST        /register/perform_register        controllers.Register.performRegist
 GET         /session_test                     controllers.Application.sessionTest
 GET         /albums_test                      controllers.Application.albumTest
 GET         /artists_test                     controllers.Application.artistTest
+GET         /songs_test                       controllers.Application.songsTest

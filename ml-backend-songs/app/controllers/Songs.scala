@@ -18,7 +18,8 @@ object Songs extends Controller {
             "name" -> JsString(song.name),
             "genre" -> JsString(song.genre),
             "duration_sec" -> JsNumber(song.durationSec),
-            "album_id" -> JsNumber(song.albumId)
+            "album_id" -> JsNumber(song.albumId),
+            "artist_id" -> JsNumber(song.artistId)
           )
         )
       )))
@@ -33,7 +34,8 @@ object Songs extends Controller {
           "name" -> JsString(s.name),
           "genre" -> JsString(s.genre),
           "duration_sec" -> JsNumber(s.durationSec),
-          "album_id" -> JsNumber(s.albumId)
+          "album_id" -> JsNumber(s.albumId),
+          "artist_id" -> JsNumber(s.artistId)
         )))
 
       case None =>
@@ -53,7 +55,8 @@ object Songs extends Controller {
             "name" -> JsString(song.name),
             "genre" -> JsString(song.genre),
             "duration_sec" -> JsNumber(song.durationSec),
-            "album_id" -> JsNumber(song.albumId)
+            "album_id" -> JsNumber(song.albumId),
+            "artist_id" -> JsNumber(song.artistId)
           )
         )
       )))
@@ -69,7 +72,8 @@ object Songs extends Controller {
             "name" -> JsString(song.name),
             "genre" -> JsString(song.genre),
             "duration_sec" -> JsNumber(song.durationSec),
-            "album_id" -> JsNumber(song.albumId)
+            "album_id" -> JsNumber(song.albumId),
+            "artist_id" -> JsNumber(song.artistId)
           )
         )
       )))
