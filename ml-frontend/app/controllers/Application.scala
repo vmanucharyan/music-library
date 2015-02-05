@@ -1,6 +1,6 @@
 package controllers
 
-import backends.{Album, AlbumsBackend, SessionInfo, SessionBackend}
+import backends._
 import play.api._
 import play.api.mvc._
 import play.api.Play
@@ -11,6 +11,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 object Application extends Controller {
   val sessionBackend = new SessionBackend(Play.application.configuration.getString("session_backend_url").get)
   val albumsBackend = new AlbumsBackend(Play.application.configuration.getString("albums_backend_url").get)
+  val artistsBackend = new ArtistsBackend(Play.application.configuration.getString("artists_backend_url").get)
 
   def index = Action { implicit request =>
     Ok(views.html.index())
@@ -39,6 +40,21 @@ object Application extends Controller {
          s"added album id: $addedAlbumId\n\n" +
          s"added album: $addedAlbum\n\n" +
          s"edited album:\n$editedAlbum")
+    }
+  }
+
+  def artistTest = Action.async {
+    for {
+      artist1 <- artistsBackend.getArtist(1)
+      addedArtistId <- artistsBackend.postArtist(Artist(name = "new artist", description = "desc"))
+      addedArtist <- artistsBackend.getArtist(addedArtistId)
+      _ <- artistsBackend.editArtist(addedArtistId, Artist(name = "new artist EDITED!!", description = "desc"))
+      editedArtist <- artistsBackend.getArtist(addedArtistId)
+    } yield {
+      Ok(s"album 1:\n$artist1\n\n" +
+        s"added artist id: $addedArtistId\n\n" +
+        s"added artist: $addedArtist\n\n" +
+        s"edited artist:\n$editedArtist")
     }
   }
 }

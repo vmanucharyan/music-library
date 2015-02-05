@@ -30,3 +30,4 @@ POST        /register/perform_register        controllers.Register.performRegist
 # test
 GET         /session_test                     controllers.Application.sessionTest
 GET         /albums_test                      controllers.Application.albumTest
+GET         /artists_test                     controllers.Application.artistTest
