@@ -10,44 +10,33 @@ import scala.concurrent.ExecutionContext.Implicits.global
 object Artists extends Controller {
   def all() = Action.async {
     DataProvider.getAllArtists() map { artists =>
-      Ok(JsObject(Seq(
-        "values" -> JsArray(
-          for (artist <- artists) yield JsObject(Seq(
+      Ok(Json.obj(
+        "values" -> JsArray(for (artist <- artists) yield Json.obj(
             "id" -> JsNumber(artist.id),
             "name" -> JsString(artist.name),
             "description" -> JsString(artist.description)
           ))
-        )
-      )))
+      ))
     } recover {
-      case e =>
-        InternalServerError(JsObject(Seq(
-          "error" -> JsString(e.getMessage)
-        )))
+      case e => InternalServerError(Json.obj("error" -> e.getMessage))
     }
   }
 
   def id(id: Int) = Action.async {
     DataProvider.getArtist(id) map {
       case Some(artist) =>
-        Ok(JsObject(Seq(
+
+        Ok(Json.obj(
           "id" -> JsNumber(artist.id),
           "name" -> JsString(artist.name),
           "description" -> JsString(artist.description)
-        )))
+        ))
 
-      case None =>
-        NotFound(JsObject(Seq(
-          "error" -> JsString(s"no artist with id '$id'")
-        )))
+      case None => NotFound(Json.obj("error" -> s"no artist with id '$id'"))
     } recover {
-      case e =>
-        InternalServerError(JsObject(Seq(
-          "error" -> JsString(e.getMessage)
-        )))
+      case e => InternalServerError(Json.obj("error" -> e.getMessage))
     }
   }
-
 
   def insertArtist() = Action { implicit request =>
     request.body.asJson match {
@@ -59,11 +48,12 @@ object Artists extends Controller {
           "id" -> JsNumber(id)
         )))
       } catch {
-        case e: Exception => InternalServerError(JsObject(Seq("error" -> JsString(e.getMessage))))
+        case e: Exception => InternalServerError(Json.obj("error" -> e.getMessage))
       }
-      case None => BadRequest(JsObject(Seq("error" -> JsString("empty body"))))
+      case None => BadRequest(Json.obj("error" -> JsString("empty body")))
     }
   }
+
   def updateArtist(id: Long) = Action { implicit request =>
     request.body.asJson match {
       case Some(json) => try {
@@ -71,11 +61,22 @@ object Artists extends Controller {
         DataProvider.updateArtist(artist)
         Ok(JsObject(Seq("message" -> JsString("success"))))
       } catch {
-        case e: Exception => InternalServerError(JsObject(Seq("error" -> JsString(e.getMessage))))
+        case e: Exception => InternalServerError(Json.obj("error" -> e.getMessage))
       }
-      case None => BadRequest(JsObject(Seq("error" -> JsString("empty body"))))
+
+      case None => BadRequest(Json.obj("error" -> "empty body"))
     }
   }
+
+  def deleteArtist(id: Long) = Action { implicit request =>
+    try {
+      DataProvider.deleteArtist(id)
+      Ok(Json.obj("message" -> "success"))
+    } catch {
+      case e : Exception => InternalServerError(Json.obj("error" -> e.getMessage))
+    }
+  }
+
   private def parseArtist(js: JsValue): Artist = Artist (
     name = (js \ "name").as[String],
     description = (js \ "description").as[String]
