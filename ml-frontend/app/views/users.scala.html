@@ -1,4 +1,4 @@
-@(users: List[User])(implicit request: Request[AnyContent])
+@(users: List[User])(implicit request: SessionRequest)
 
 @main("Users database") {
     <div class="panel panel-default">
@@ -14,8 +14,8 @@
 
                 @for(user <- users) {
                     <tr>
-                        <td>@user.email</td>
-                        <td>@user.fullName</td>
+                        <td>@{user.email}</td>
+                        <td>@{user.fullName}</td>
                     </tr>
                 }
             </table>

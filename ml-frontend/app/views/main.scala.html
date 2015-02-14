@@ -1,6 +1,8 @@
-@(title: String)(content: Html)(implicit request: Request[AnyContent])
+@(title: String)(content: Html)(implicit request: SessionRequest)
 
-@import _root_.oauth2.AuthInfo
+@import _root_.play.api.Play.current
+@import _root_.play.api.libs.concurrent.Execution.Implicits._
+
 
 <!DOCTYPE html>
 
@@ -27,11 +29,16 @@
                 <a class="navbar-brand" href="/">Brand</a>
             </div>
             <div class="navbar-collapse collapse navbar-responsive-collapse">
+
                 <ul class="nav navbar-nav">
                     <li><a href="/users">Пользователи</a></li>
                 </ul>
 
-                @if(!AuthInfo.isAuthorized) {
+                <ul class="nav navbar-nav">
+                    <li><a href="/albums">Альбомы</a></li>
+                </ul>
+
+                @if(request.sessionInfo.isEmpty) {
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="/register">Регистрация</a></li>
                         <li><a href="/signin">Вход</a> </li>

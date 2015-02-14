@@ -23,3 +23,7 @@ class SongsTable(tag: Tag) extends Table[Song](tag, "SONGS") {
 
   def * = (name, genre, durationSec, albumId, artistId, id) <> (Song.tupled, Song.unapply)
 }
+
+object Songs {
+  
+}

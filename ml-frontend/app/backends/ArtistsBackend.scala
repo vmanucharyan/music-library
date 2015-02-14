@@ -10,6 +10,13 @@ import play.api.libs.ws.WS
 import scala.concurrent.{Future, ExecutionContext}
 
 class ArtistsBackend(val baseUrl: String) {
+  def getAllArtists() (implicit app: Application, ec: ExecutionContext) : Future[List[Artist]] =
+    WS.url(s"$baseUrl/artists").get() map { response =>
+      response.status match {
+        case Status.OK => response.json.as[List[Artist]]
+        case status => throw new ArtistsBackendException(s"unexpected status code ($status)")
+      }
+    }
 
   def getArtist(id: Long) (implicit app: Application, ec: ExecutionContext) : Future[Artist] =
     WS.url(s"$baseUrl/artists/$id").get() map { response =>

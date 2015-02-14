@@ -1,12 +1,18 @@
 package controllers
 
-import backends._
 import play.api._
 import play.api.mvc._
 import play.api.Play
 import play.api.Play.current
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.mvc.Result
+import play.api.mvc.Result._
+
+import scala.concurrent.Future
+
+import backends._
+import oauth2.AuthAction
 
 object Application extends Controller {
   val sessionBackend = new SessionBackend(Play.application.configuration.getString("session_backend_url").get)
@@ -14,11 +20,13 @@ object Application extends Controller {
   val artistsBackend = new ArtistsBackend(Play.application.configuration.getString("artists_backend_url").get)
   val songsBackend = new SongsBackend(Play.application.configuration.getString("songs_backend_url").get)
 
-  def index = Action { implicit request =>
-    Ok(views.html.index())
+  implicit val sessionBackendImplicit = sessionBackend
+
+  def index = SessionAction { implicit request =>
+    Future(Ok(views.html.index()))
   }
 
-  def sessionTest = Action.async {
+  def sessionTest = SessionAction { implicit request =>
     for {
       id <- sessionBackend.newSession(new SessionInfo("user@example.com", "adfsdfs"))
       getSession <- sessionBackend.getSession(id)
@@ -29,7 +37,7 @@ object Application extends Controller {
     }
   }
 
-  def albumTest = Action.async {
+  def albumTest = ProtectedAction { implicit request =>
     for {
       album1 <- albumsBackend.getAlbum(1)
       addedAlbumId <- albumsBackend.postAlbum(Album(name = "new_album", description = "desc", year = 1111, artistId = 1))
@@ -37,14 +45,17 @@ object Application extends Controller {
       _ <- albumsBackend.editAlbum(addedAlbumId, Album(name = "new_album EDITED!!", description = "desc", year = 1234, artistId = 1))
       editedAlbum <- albumsBackend.getAlbum(addedAlbumId)
     } yield {
-      Ok(s"album 1:\n$album1\n\n" +
+      Logger.info(s"${request.sessionInfo}")
+ //     val userId = request.sessionInfo.userId.getOrElse("")
+      Ok(//s"USER: $userId\n\n" +
+         s"album 1:\n$album1\n\n" +
          s"added album id: $addedAlbumId\n\n" +
          s"added album: $addedAlbum\n\n" +
          s"edited album:\n$editedAlbum")
     }
   }
 
-  def artistTest = Action.async {
+  def artistTest = SessionAction { implicit request =>
     for {
       artist1 <- artistsBackend.getArtist(1)
       addedArtistId <- artistsBackend.postArtist(Artist(name = "new artist", description = "desc"))
@@ -59,18 +70,22 @@ object Application extends Controller {
     }
   }
 
-  def songsTest = Action.async {
+  def songsTest = SessionAction { implicit request =>
     for {
       song3 <- songsBackend.getSong(3)
       addedSongId <- songsBackend.postSong(Song(name = "new song", durationSec = 100, genre = "genre", albumId = 1, artistId = 1))
       addedSong <- songsBackend.getSong(addedSongId)
       _ <- songsBackend.editSong(addedSongId, Song(name = "new song EDITED!!!", durationSec = 123, genre = "genre EDITED!!", albumId = 1, artistId = 1))
       editedSong <- songsBackend.getSong(addedSongId)
+      ofArtist1 <- songsBackend.songsOfArtist(1)
+      ofAlbum1 <- songsBackend.songsOfAlbum(1)
     } yield {
       Ok(s"song 3:\n$song3\n\n" +
-        s"added song id: $addedSongId\n\n" +
-        s"added song: $addedSong\n\n" +
-        s"edited song:\n$editedSong")
+         s"added song id: $addedSongId\n\n" +
+         s"added song: $addedSong\n\n" +
+         s"edited song:\n$editedSong\n\n" +
+         s"of artist 1:\n$ofArtist1\n\n" +
+         s"of album 1:\n$ofAlbum1")
     }
   }
 }

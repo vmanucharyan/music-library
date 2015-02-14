@@ -20,6 +20,22 @@ class SongsBackend(val baseUrl: String) {
       }
     }
 
+  def songsOfAlbum(albumId: Long) (implicit app: Application, ec: ExecutionContext) : Future[List[Song]] =
+    WS.url(s"$baseUrl/songs/of_album/$albumId").get() map { response =>
+      response.status match {
+        case Status.OK => (response.json \ "values").as[List[Song]]
+        case status => throw new SongsBackendException(s"unexpected status code ($status)")
+      }
+    }
+
+  def songsOfArtist(artistId: Long) (implicit app: Application, ec: ExecutionContext) : Future[List[Song]] =
+    WS.url(s"$baseUrl/songs/of_artist/$artistId").get() map { response =>
+      response.status match {
+        case Status.OK => (response.json \ "values").as[List[Song]]
+        case status => throw new SongsBackendException(s"unexpected status code ($status)")
+      }
+    }
+
   def postSong(song: Song) (implicit app: Application, ec: ExecutionContext) : Future[Long] =
     WS.url(s"$baseUrl/songs/new").post(Json.toJson(song)) map { response =>
       response.status match {

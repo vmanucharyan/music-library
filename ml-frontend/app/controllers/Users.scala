@@ -2,47 +2,29 @@ package controllers
 
 import data.DataProvider
 import models.oauth2.OAuthApp
-import oauth2.{AuthInfo, RandomAppCredsGenerator}
+import oauth2.{RandomAppCredsGenerator}
+import play.api.Application
 import play.api.mvc._
+import play.api.libs.concurrent.Execution.Implicits._
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import play.api.Play.current
+
+import scala.concurrent.{ExecutionContext, Future}
 
 object Users extends Controller {
-  def all = Action.async { implicit rs =>
-    if (AuthInfo.isAuthorized) {
-      data.DataProvider.getUsers()
-        .map(users => Ok(views.html.users(users)))
-    }
-    else Future(Redirect(routes.SignIn.signIn()))
+  def all() = SessionAction { implicit rs =>
+      data.DataProvider.getUsers().map(users => Ok(views.html.users(users)))
   }
 
-  def me = Action.async { implicit rs =>
-    AuthInfo.acessToken match {
-      case Some(token) =>
-        for {
-          user <- DataProvider.getUserById(token.userId)
-          apps <- DataProvider.getUserApps(token.userId)
-        } yield {
-          Ok(views.html.user_page(user.get, apps))
-        }
-      case None =>
-        Future(Redirect(routes.SignIn.signIn()))
+  def me() = ProtectedAction { implicit rs =>
+    rs.sessionInfo.map { sessionInfo => 
+      for {
+        user <- DataProvider.getUserById(sessionInfo.userId)
+        apps <- DataProvider.getUserApps(sessionInfo.userId)
+      } yield {
+        Ok(views.html.user_page(user.get, apps))
+      }
     }
-  }
-
-  def registerApp = Action.async { implicit rs =>
-    AuthInfo.acessToken match {
-      case Some(token) =>
-        val appCredsGenerator = new RandomAppCredsGenerator()
-        val id = appCredsGenerator.generateId()
-        val secret = appCredsGenerator.generateKey()
-
-        DataProvider.insertApplication(new OAuthApp(id, secret, token.userId)).map { f =>
-          Redirect(routes.Users.me())
-        }
-
-      case None => Future(Redirect(routes.SignIn.signIn(Some(routes.Users.registerApp().absoluteURL()))))
-    }
+    .getOrElse(Future(Unauthorized("Unauthorized")))
   }
 }

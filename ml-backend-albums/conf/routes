@@ -8,7 +8,7 @@ GET           /                                   controllers.Application.index
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                       controllers.Assets.at(path="/public", file)
 
-GET           /albums                             controllers.Albums.all()
+GET           /albums                             controllers.Albums.all(page: Option[Int], page_len: Option[Int])
 GET           /albums/:id                         controllers.Albums.id(id: Int)
 GET           /albums/of_artist/:artist_id        controllers.Albums.ofArtist(artist_id: Long)
 POST          /albums/new                         controllers.Albums.insert()

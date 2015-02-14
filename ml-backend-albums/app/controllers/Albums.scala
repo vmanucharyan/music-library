@@ -4,26 +4,38 @@ import data.DataProvider
 import models.Album
 import play.api.libs.json._
 import play.api.mvc._
+import play.api.libs.functional.syntax._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 object Albums extends Controller {
-  def all() = Action.async { implicit request =>
-    DataProvider.getAllAlbums().map { artists =>
-      Ok(Json.prettyPrint(JsObject(Seq(
-        "values" -> JsArray(
-          for (artist <- artists) yield JsObject(Seq(
-            "id" -> JsNumber(artist.id),
-            "name" -> JsString(artist.name),
-            "description" -> JsString(artist.description),
-            "year" -> JsNumber(artist.year),
-            "artist_id" -> JsNumber(artist.artistId)
-          ))
-        )
-      ))))
+  val DefaultPageLen = 2
+
+  implicit val albumsWrites : Writes[Album] = (
+    (JsPath \ "name").write[String] and
+    (JsPath \ "description").write[String] and
+    (JsPath \ "year").write[Int] and
+    (JsPath \ "artist_id").write[Long] and
+    (JsPath \ "id").write[Long]
+  ) (unlift(Album.unapply))
+
+  def all(page: Option[Int], pageLen: Option[Int]) = Action.async { implicit request =>
+    val albumsFuture = page match {
+      case Some(pageValue) => DataProvider.getAllAlbums((pageValue - 1) * pageLen.getOrElse(DefaultPageLen), pageLen.getOrElse(DefaultPageLen))
+      case None => DataProvider.getAllAlbums()
+    }
+
+    albumsFuture map { albums =>
+      val pageVal: Int  = page.getOrElse(1)
+      val count: Int  = albums.length
+
+      Ok(Json.prettyPrint(Json.obj(
+        "page" -> pageVal,
+        "page_len" -> count,
+        "values" -> albums
+      )))
     } recover {
-      case e =>
-        InternalServerError(Json.obj("error" -> JsString(e.getMessage)))
+      case e => InternalServerError(Json.obj("error" -> e.getMessage))
     }
   }
 
@@ -31,17 +43,8 @@ object Albums extends Controller {
     val albumsFuture = DataProvider.getAlbum(id)
 
     albumsFuture map {
-      case Some(album) =>
-        Ok(Json.prettyPrint(JsObject(Seq(
-          "id" -> JsNumber(album.id),
-          "name" -> JsString(album.name),
-          "description" -> JsString(album.description),
-          "year" -> JsNumber(album.year),
-          "artist_id" -> JsNumber(album.artistId)
-        ))))
-
-      case None =>
-        NotFound(Json.obj("error" -> JsString(s"no artist with id '$id'")))
+      case Some(album) => Ok(Json.prettyPrint(Json.toJson(album)))
+      case None => NotFound(Json.obj("error" -> JsString(s"no artist with id '$id'")))
     }
   }
 
@@ -82,20 +85,9 @@ object Albums extends Controller {
 
   def ofArtist(artistId: Long) = Action.async { implicit request =>
     DataProvider.albumsOfArtist(artistId) map { albums =>
-      Ok(Json.prettyPrint(JsObject(Seq(
-        "values" -> JsArray(
-          for (album <- albums) yield JsObject(Seq(
-            "id" -> JsNumber(album.id),
-            "name" -> JsString(album.name),
-            "description" -> JsString(album.description),
-            "year" -> JsNumber(album.year),
-            "artist_id" -> JsNumber(album.artistId)
-          ))
-        )
-      ))))
+      Ok(Json.prettyPrint(Json.obj("values" -> albums)))
     } recover {
-      case e =>
-        InternalServerError(Json.obj("error" -> JsString(e.getMessage)))
+      case e => InternalServerError(Json.obj("error" -> JsString(e.getMessage)))
     }
   }
 

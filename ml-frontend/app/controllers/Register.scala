@@ -6,11 +6,12 @@ import play.api.data.Forms._
 import play.api.data._
 import play.api.mvc._
 
+import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 object Register extends Controller {
-  def register = Action { implicit request =>
-    Ok(views.html.register())
+  def register = SessionAction { implicit request =>
+    Future(Ok(views.html.register()))
   }
 
   def registerForm = Form ( tuple (
@@ -19,7 +20,7 @@ object Register extends Controller {
     "password" -> nonEmptyText(3, 20)
   ))
 
-  def performRegister = Action.async { implicit rs =>
+  def performRegister = SessionAction { implicit rs =>
     val (email, fullName, pass) = registerForm.bindFromRequest.get
     val passHash = UsersHelper.hashPassword(pass)
     val user = User(email, fullName, passHash)

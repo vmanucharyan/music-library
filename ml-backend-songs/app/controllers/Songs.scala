@@ -4,43 +4,54 @@ import data.DataProvider
 import models.Song
 import play.api.libs.json._
 import play.api.mvc._
+import play.api.libs.functional.syntax._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 object Songs extends Controller {
-  def all() = Action.async {
-    DataProvider.getAllSongs().map { songs =>
+  val DefaultPageLen = 2
+
+  implicit val songsWrites: Writes[Song] = (
+    ( JsPath  \ "name").write[String] and
+    ( JsPath  \ "genre").write[String] and
+    ( JsPath  \ "duration_sec").write[Int] and
+    ( JsPath  \ "album_id").write[Long] and
+    ( JsPath  \ "artist_id").write[Long] and
+    ( JsPath  \ "id").write[Long]
+  ) (unlift(Song.unapply))
+
+  implicit val songReads : Reads[Song] = (
+    ( JsPath  \ "name").read[String] and
+    ( JsPath  \ "genre").read[String] and
+    ( JsPath  \ "duration_sec").read[Int] and
+    ( JsPath  \ "album_id").read[Long] and
+    ( JsPath  \ "artist_id").read[Long] and
+    ( JsPath  \ "id").read[Long]
+  ) (Song.apply _)
+
+  def all(page: Option[Int], pageLen: Option[Int]) = Action.async {
+    val songsFuture = page match {
+      case Some(pageValue) => DataProvider.getAllSongs((pageValue - 1) * pageLen.getOrElse(DefaultPageLen), pageLen.getOrElse(DefaultPageLen))
+      case None => DataProvider.getAllSongs()
+    }
+
+    songsFuture map { songs =>
+      val currPage: Int = page.getOrElse(1)
+      val count = songs.length
+
       Ok(Json.prettyPrint(Json.obj(
-        "values" -> JsArray(
-          for (song <- songs) yield Json.obj(
-            "id" -> JsNumber(song.id),
-            "name" -> JsString(song.name),
-            "genre" -> JsString(song.genre),
-            "duration_sec" -> JsNumber(song.durationSec),
-            "album_id" -> JsNumber(song.albumId),
-            "artist_id" -> JsNumber(song.artistId)
-          )
-        )
+        "page" -> currPage,
+        "page_len" -> count,
+        "values" -> songs
       )))
     }
   }
 
   def id(id: Int) = Action.async { implicit request =>
     DataProvider.getSong(id).map {
-      case Some(s) =>
-        Ok(Json.prettyPrint(Json.obj(
-          "id" -> JsNumber(s.id),
-          "name" -> JsString(s.name),
-          "genre" -> JsString(s.genre),
-          "duration_sec" -> JsNumber(s.durationSec),
-          "album_id" -> JsNumber(s.albumId),
-          "artist_id" -> JsNumber(s.artistId)
-        )))
-
-      case None =>
-        NotFound(Json.obj("error" -> s"no song with id '$id'"))
-
+      case Some(s) =>Ok(Json.toJson(s))
+      case None => NotFound(Json.obj("error" -> s"no song with id '$id'"))
     } recover {
       case ex => InternalServerError(Json.obj("error" -> ex.getMessage))
     }
@@ -48,35 +59,13 @@ object Songs extends Controller {
 
   def ofAlbum(albumId: Long) = Action.async {
     DataProvider.songsOfAlbum(albumId) map { songs =>
-      Ok(Json.prettyPrint(Json.obj(
-        "values" -> Json.arr(
-          for (song <- songs) yield Json.obj(
-            "id" -> JsNumber(song.id),
-            "name" -> JsString(song.name),
-            "genre" -> JsString(song.genre),
-            "duration_sec" -> JsNumber(song.durationSec),
-            "album_id" -> JsNumber(song.albumId),
-            "artist_id" -> JsNumber(song.artistId)
-          )
-        )
-      )))
+      Ok(Json.prettyPrint(Json.obj("values" -> songs)))
     }
   }
 
   def ofArtist(artistId: Long) = Action.async {
     DataProvider.songsOfArtist(artistId) map { songs =>
-      Ok(Json.prettyPrint(Json.obj(
-        "values" -> Json.arr(
-          for (song <- songs) yield Json.obj(
-            "id" -> JsNumber(song.id),
-            "name" -> JsString(song.name),
-            "genre" -> JsString(song.genre),
-            "duration_sec" -> JsNumber(song.durationSec),
-            "album_id" -> JsNumber(song.albumId),
-            "artist_id" -> JsNumber(song.artistId)
-          )
-        )
-      )))
+      Ok(Json.prettyPrint(Json.obj("values" -> songs)))
     }
   }
 

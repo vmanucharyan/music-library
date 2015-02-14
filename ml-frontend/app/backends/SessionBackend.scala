@@ -2,10 +2,10 @@ package backends
 
 import play.api.Application
 import play.api.http.Status
+import play.api.Play
 import play.api.libs.json._
 import play.api.libs.ws.WS
 import play.api.libs.functional.syntax._
-
 import scala.concurrent.{Future, ExecutionContext}
 
 class SessionBackend(val baseUrl: String) {

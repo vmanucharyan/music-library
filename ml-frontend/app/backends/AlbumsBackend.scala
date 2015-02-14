@@ -26,6 +26,16 @@ class AlbumsBackend(val baseUrl: String) {
     (JsPath \ "id").write[Long]
   ) (unlift(Album.unapply))
 
+  def all(page: Int, pageLen: Int)(implicit app: Application, ec: ExecutionContext) : Future[List[Album]] =
+    WS.url(s"$baseUrl/albums")
+      .withQueryString("page" -> s"$page", "page_len" -> s"$pageLen")
+      .get() map { response => 
+        response.status match {
+          case Status.OK => (response.json \ "values").as[List[Album]]
+          case status => throw new AlbumsBackendException(s"unexpected status code ($status)")
+        }
+      }
+
   def getArtistsAlbums(artistId: Long) (implicit app: Application, ec: ExecutionContext) : Future[List[Album]] =
     WS.url(s"$baseUrl/albums/of_artist/$artistId").get() map { response =>
       response.status match {

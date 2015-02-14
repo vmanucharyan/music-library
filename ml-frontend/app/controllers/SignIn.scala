@@ -4,18 +4,23 @@ import java.time.Duration
 
 import data.DataProvider
 import models.UsersHelper
-import oauth2.{AccessToken, AlphaNumericTokenGenerator, AuthInfo, AuthSessionKeeper}
+import play.api.Play.current
+import oauth2.{AccessToken, AlphaNumericTokenGenerator, AuthSessionKeeper}
 import play.Logger
 import play.api.data.Forms._
 import play.api.data._
 import play.api.mvc._
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+
+import backends.SessionInfo
+import backends.Backends
 
 object SignIn extends Controller {
-  def signIn(redirect: Option[String]) = Action { implicit request =>
+  def signIn(redirect: Option[String]) = SessionAction { implicit request =>
     Logger.debug(s"signin: $redirect")
-    Ok(views.html.login(redirect))
+    Future(Ok(views.html.login(redirect)))
   }
 
   def signInForm = Form (
@@ -25,43 +30,25 @@ object SignIn extends Controller {
     )
   )
 
-  def performSignIn(redirectUri: Option[String]) = Action.async { implicit request =>
+  def performSignIn(redirectUri: Option[String]) = SessionAction { implicit request =>
     val (m, pwd) = signInForm.bindFromRequest.get
+    val userFuture = DataProvider.getUserById(m)
 
-    Logger.debug(s"$redirectUri")
+    userFuture flatMap { userOpt =>
+      userOpt map { user =>
+        val sessionInfo = new SessionInfo(userId = user.email, authToken = new AlphaNumericTokenGenerator().generateToken())
+        val sessionIdFuture = Backends.session.newSession(sessionInfo)
 
-    val tokenGenerator = new AlphaNumericTokenGenerator()
-
-    DataProvider.getUserById(m) map {
-      case Some(user) =>
-        val pwdHash = UsersHelper.hashPassword(pwd)
-        if (pwdHash == user.passHash) {
-          val token = new AccessToken(m, tokenGenerator.generateToken(), Duration.ofMinutes(5), "password")
-
-          AuthSessionKeeper.storeToken(token)
-
-          Logger.debug(s"$redirectUri")
-
-          redirectUri match {
-            case Some(url) => Redirect(url)
-              .withSession("token" -> token.value)
-
-            case None => Redirect(routes.Application.index())
-              .withSession("token" -> token.value)
-          }
+        sessionIdFuture map { sessionId =>
+          Redirect(routes.Application.index).withSession("session_id" -> sessionId, "auth_token" -> sessionInfo.authToken)
         }
-        else BadRequest(views.html.static_pages.nosuchuser())
 
-      case None => BadRequest(views.html.static_pages.nosuchuser())
+      } getOrElse(Future(Forbidden(views.html.static_pages.nosuchuser())))
     }
   }
 
-  def signOut() = Action { implicit request =>
-    AuthInfo.acessToken match {
-      case Some(token) => AuthSessionKeeper.removeToken(token)
-      case None =>
-    }
-
-    Redirect(routes.Application.index()).withNewSession
+  def signOut() = ProtectedAction { implicit request =>
+    request.sessionInfo.map(session => Backends.session.deleteSession(session.id.getOrElse("")))
+    Future(Redirect(routes.Application.index()).withNewSession)
   }
 }
