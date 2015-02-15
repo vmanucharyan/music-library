@@ -21,12 +21,14 @@ object SessionAction {
         .map(ssid => Backends.session.getSession(ssid))
         .getOrElse(Future(None))
 
-    sessionFuture.flatMap(s => body(new SessionRequest(s, request)))    
+    sessionFuture.flatMap(s => body(new SessionRequest(s, request)))
   }
 }
 
 object ProtectedAction {
   def apply(body: SessionRequest => Future[Result]) = SessionAction { implicit request =>
-    request.sessionInfo.map(sessionInfo => body(request)).getOrElse(Future(Unauthorized("Unauthorized")))
+    request.sessionInfo
+      .map(sessionInfo => body(request))
+      .getOrElse(Future(Redirect(routes.SignIn.signIn(Some(request.uri)))))
   }
 }

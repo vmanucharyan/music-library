@@ -12,7 +12,6 @@ import play.api.mvc.Result._
 import scala.concurrent.Future
 
 import backends._
-import oauth2.AuthAction
 
 object Application extends Controller {
   val sessionBackend = new SessionBackend(Play.application.configuration.getString("session_backend_url").get)
@@ -46,8 +45,8 @@ object Application extends Controller {
       editedAlbum <- albumsBackend.getAlbum(addedAlbumId)
     } yield {
       Logger.info(s"${request.sessionInfo}")
- //     val userId = request.sessionInfo.userId.getOrElse("")
-      Ok(//s"USER: $userId\n\n" +
+      val userId = request.sessionInfo.map(s => s.userId).getOrElse("not authorized")
+      Ok(s"USER: $userId\n\n" +
          s"album 1:\n$album1\n\n" +
          s"added album id: $addedAlbumId\n\n" +
          s"added album: $addedAlbum\n\n" +

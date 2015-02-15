@@ -18,11 +18,12 @@ object DataProvider {
     })
   }
 
-  def getAllSongs(first: Int, count: Int) (implicit ec: ExecutionContext) : Future[List[Song]] =
-    DB.withSession(implicit s => Future {
+  def getAllSongs(first: Int, count: Int) (implicit ec: ExecutionContext) : Future[List[Song]] = Future {
+    DB.withSession(implicit s => {
       songs.drop(first).take(count).list 
     })
-
+  }
+  
   def getSong(id: Long) (implicit context: ExecutionContext) : Future[Option[Song]] = Future {
     DB.withSession(implicit s => {
       songs.filter(e => e.id === id).firstOption
@@ -41,10 +42,11 @@ object DataProvider {
     })
   }
 
-  def songsOfArtist(artistId: Long) (implicit context: ExecutionContext) : Future[List[Song]] =
-    DB.withSession(implicit s => Future {
+  def songsOfArtist(artistId: Long) (implicit context: ExecutionContext) : Future[List[Song]] = Future {
+    DB.withSession(implicit s => {
       songs.filter(s => s.artistId === artistId).list
     })
+  }
 
   def insertSong(song: Song) : Long = {
     DB.withSession(implicit s => {

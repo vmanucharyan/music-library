@@ -1,0 +1,17 @@
+@(heading: String, details: String)(implicit request: SessionRequest)
+
+@main("Ошибка авторизации") {
+    <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                <h3 class="panel-title">@heading</h3>
+            </div>
+            <div class="panel-body">
+                <h5>@details</h5>
+                <div class="pull-right margin-top-large">
+                    <button class="btn btn-default signin-btn-size"><a href="/">На главную</a></button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

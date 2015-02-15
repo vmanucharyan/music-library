@@ -1,0 +1,40 @@
+@import backends.{Artist, Album}
+
+@(artist: Artist, albums: List[Album])(implicit request: SessionRequest)
+
+@main(artist.name) {
+
+<div class="panel-body">
+
+    <ul class="breadcrumb">
+        <li class="active">@{artist.name}</li>
+    </ul>
+
+    <div class="col-md-7 jumbotron">
+        <h2>@{artist.name}</h2>
+        <p>
+            <p>@{artist.description}</p>
+            <small class="pull-right">Википедия — свободная энциклопедия</small>
+        <p>
+    </div>
+
+    <div class="col-md-5">
+        <div class="panel panel-info">
+
+            <div class="panel-heading">
+                <h3 class="panel-title">Альбомы</h3>
+            </div>
+            <div class="list-group">
+            @for(album <- albums) {
+                <a href="@{routes.Albums.id(album.id)}" class="list-group-item">
+                    <p class="list-group-item-heading">@{album.name}</p>
+                    <p class="list-group-item-text truncated">@{album.description}</p>
+                </a>
+            }
+            </div>
+
+        </div>
+    </div>
+</div>
+
+}

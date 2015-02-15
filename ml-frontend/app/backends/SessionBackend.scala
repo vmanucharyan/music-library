@@ -9,7 +9,6 @@ import play.api.libs.functional.syntax._
 import scala.concurrent.{Future, ExecutionContext}
 
 class SessionBackend(val baseUrl: String) {
-
   implicit val sessionReads : Reads[SessionInfo] = (
       (JsPath \ "user_id").read[String] and
       (JsPath \ "auth_token").read[String] and

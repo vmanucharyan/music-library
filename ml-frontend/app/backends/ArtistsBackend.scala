@@ -13,7 +13,7 @@ class ArtistsBackend(val baseUrl: String) {
   def getAllArtists() (implicit app: Application, ec: ExecutionContext) : Future[List[Artist]] =
     WS.url(s"$baseUrl/artists").get() map { response =>
       response.status match {
-        case Status.OK => response.json.as[List[Artist]]
+        case Status.OK => (response.json \ "values").as[List[Artist]]
         case status => throw new ArtistsBackendException(s"unexpected status code ($status)")
       }
     }
@@ -23,7 +23,10 @@ class ArtistsBackend(val baseUrl: String) {
       response.status match {
         case Status.OK => response.json.as[Artist]
         case Status.NOT_FOUND => throw new ArtistsNotFoundException(s"artist with id $id not found")
-        case status => throw new ArtistsBackendException(s"unexpected status code ($status)")
+        case status =>
+          val errorMessage = (response.json \ "error").as[String]
+          throw new ArtistsBackendException(s"unexpected status code ($status) returned from artists. " +
+                                            s"Error message: $errorMessage")
       }
     }
 
@@ -31,7 +34,9 @@ class ArtistsBackend(val baseUrl: String) {
     WS.url(s"$baseUrl/artists/new").post(Json.toJson(artist)) map { response =>
       response.status match {
         case Status.OK => (response.json \ "id").as[Long]
-        case status => throw new ArtistsBackendException("failed to create artist")
+        case status => 
+          val errorMessage = (response.json \ "error").as[String]
+          throw new ArtistsBackendException("failed to create artist.")
       }
     }
 

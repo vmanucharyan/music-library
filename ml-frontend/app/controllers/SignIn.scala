@@ -10,8 +10,8 @@ import play.Logger
 import play.api.data.Forms._
 import play.api.data._
 import play.api.mvc._
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 import backends.SessionInfo
@@ -40,7 +40,8 @@ object SignIn extends Controller {
         val sessionIdFuture = Backends.session.newSession(sessionInfo)
 
         sessionIdFuture map { sessionId =>
-          Redirect(routes.Application.index).withSession("session_id" -> sessionId, "auth_token" -> sessionInfo.authToken)
+          Redirect(redirectUri.map(uri => uri).getOrElse(routes.Application.index().url))
+            .withSession("session_id" -> sessionId, "auth_token" -> sessionInfo.authToken)
         }
 
       } getOrElse(Future(Forbidden(views.html.static_pages.nosuchuser())))

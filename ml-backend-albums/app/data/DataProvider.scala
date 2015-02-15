@@ -18,10 +18,11 @@ object DataProvider {
     })
   }
 
-  def getAllAlbums(first: Int, count: Int) (implicit ec: ExecutionContext) : Future[List[Album]] =
-    DB.withSession(implicit session => Future {
+  def getAllAlbums(first: Int, count: Int) (implicit ec: ExecutionContext) : Future[List[Album]] = Future {
+    DB.withSession(implicit session => {
       albums.drop(first).take(count).list
     })
+  }
 
   def getAlbum(id: Long) (implicit context: ExecutionContext) : Future[Option[Album]] = Future {
     DB.withSession(implicit s => {
@@ -29,10 +30,11 @@ object DataProvider {
     })
   }
 
-  def findAlbumByName(name: String) (implicit context: ExecutionContext) : Future[List[Album]] =
-    DB.withSession(implicit s => Future {
+  def findAlbumByName(name: String) (implicit context: ExecutionContext) : Future[List[Album]] = Future {
+    DB.withSession(implicit s => {
       albums.filter(a => a.name === name).list
     })
+  }
 
   def insertAlbum(album: Album) (implicit context: ExecutionContext) : Long = {
     DB.withSession(implicit s => {
@@ -46,10 +48,11 @@ object DataProvider {
     })
   }
 
-  def albumsOfArtist(artistId: Long) (implicit context: ExecutionContext) : Future[List[Album]] =
-    DB.withSession(implicit s => Future {
+  def albumsOfArtist(artistId: Long) (implicit context: ExecutionContext) : Future[List[Album]] = Future {
+    DB.withSession(implicit s => {
       albums.filter(a => a.artistId === artistId).list
     })
+  }
 
   def delete(id: Long) : Unit = DB.withSession(implicit session => {
     albums.filter(a => a.id === id).delete

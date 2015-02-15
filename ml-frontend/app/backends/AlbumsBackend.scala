@@ -39,7 +39,7 @@ class AlbumsBackend(val baseUrl: String) {
   def getArtistsAlbums(artistId: Long) (implicit app: Application, ec: ExecutionContext) : Future[List[Album]] =
     WS.url(s"$baseUrl/albums/of_artist/$artistId").get() map { response =>
       response.status match {
-        case Status.OK => response.json.as[List[Album]]
+        case Status.OK => (response.json \ "values").as[List[Album]]
         case status => throw new AlbumsBackendException(s"unexpected status code ($status)")
       }
     }

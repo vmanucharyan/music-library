@@ -26,8 +26,9 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">Brand</a>
+                <a class="navbar-brand" href="/">Music</a>
             </div>
+
             <div class="navbar-collapse collapse navbar-responsive-collapse">
 
                 <ul class="nav navbar-nav">
@@ -35,7 +36,15 @@
                 </ul>
 
                 <ul class="nav navbar-nav">
-                    <li><a href="/albums">Альбомы</a></li>
+                    <li><a href="@routes.Artists.all()">Исполнители</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav">
+                    <li><a href="@{routes.Albums.all()}">Альбомы</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav">
+                    <li><a href="@{routes.Songs.all()}">Песни</a></li>
                 </ul>
 
                 @if(request.sessionInfo.isEmpty) {

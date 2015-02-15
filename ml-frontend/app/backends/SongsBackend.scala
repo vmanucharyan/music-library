@@ -11,6 +11,14 @@ import scala.concurrent.{Future, ExecutionContext}
 class SongsBackend(val baseUrl: String) {
   import Song.{reads, writes}
 
+  def getAllSongs(page: Int, pageLen: Int) (implicit app: Application, ec: ExecutionContext) : Future[List[Song]] =
+    WS.url(s"$baseUrl/songs").get().map { implicit response =>
+      response.status match {
+        case Status.OK => (response.json \ "values").as[List[Song]]
+        case status => throw new SongsBackendException(s"unexpected status code ${status}")
+      }
+    }
+
   def getSong(id: Long) (implicit app: Application, ec: ExecutionContext) : Future[Song] =
     WS.url(s"$baseUrl/songs/$id").get() map { response =>
       response.status match {

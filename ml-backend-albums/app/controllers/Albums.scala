@@ -6,7 +6,7 @@ import play.api.libs.json._
 import play.api.mvc._
 import play.api.libs.functional.syntax._
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 object Albums extends Controller {
   val DefaultPageLen = 2
@@ -34,9 +34,9 @@ object Albums extends Controller {
         "page_len" -> count,
         "values" -> albums
       )))
-    } recover {
-      case e => InternalServerError(Json.obj("error" -> e.getMessage))
-    }
+    }// recover {
+//      case e => InternalServerError(Json.obj("error" -> e.getMessage))
+//    }
   }
 
   def id(id: Int) = Action.async { implicit request =>

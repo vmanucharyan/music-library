@@ -29,3 +29,12 @@ GET         /songs_test                       controllers.Application.songsTest
 
 # data
 GET         /albums                           controllers.Albums.all(page: Int ?= 1, page_len: Int ?= 2)
+GET         /albums/:id                       controllers.Albums.id(id: Long)
+
+# artists
+GET         /artists                          controllers.Artists.all()
+GET         /artists/:id                      controllers.Artists.id(id: Long)
+
+# songs
+GET         /songs                            controllers.Songs.all(page: Int ?= 1, page_len: Int ?= 2)
+GET         /songs/:id                        controllers.Songs.id(id: Long)

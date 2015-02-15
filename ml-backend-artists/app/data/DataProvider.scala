@@ -12,15 +12,17 @@ object DataProvider {
 
   // Artists
 
-  def getAllArtists() (implicit context: ExecutionContext) : Future[List[Artist]] =
-    DB.withSession(implicit s => Future {
+  def getAllArtists() (implicit context: ExecutionContext) : Future[List[Artist]] = Future {
+    DB.withSession(implicit s => 
       artists.list
-    })
+    )
+  }
 
-  def getArtist(id: Long) (implicit context: ExecutionContext) : Future[Option[Artist]] =
-    DB.withSession(implicit s => Future {
+  def getArtist(id: Long) (implicit context: ExecutionContext) : Future[Option[Artist]] = Future {
+    DB.withSession(implicit s => {
       artists.filter(e => e.id === id).firstOption
     })
+  }
 
   def insertArtist(artist: Artist) : Long = {
     DB.withSession(implicit s => {
