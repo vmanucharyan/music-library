@@ -1,10 +1,10 @@
 @()(implicit request: SessionRequest)
 
-@main("register") {
+@main("Регистрация пользователя") {
     <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-primary">
+        <div class="panel panel-info">
             <div class="panel-heading">
-                РЕГИСТРАЦИЯ НОВОГО ПОЛЬЗОВАТЕЛЯ
+                <h3 class="panel-title">РЕГИСТРАЦИЯ НОВОГО ПОЛЬЗОВАТЕЛЯ</h3>
             </div>
 
             <div class="panel-body margin-small">
@@ -12,7 +12,7 @@
                 <form action="/register/perform_register" method="POST" class="form-horizontal">
                     <div class="form-group">
                         <div>
-                            <label for="input-email" class="label label-info">Электронная почта</label>
+                            <label for="input-email" class="label label-default">Электронная почта</label>
                         </div>
                         <div class="col-md-12">
                             <input id="input-email" name="email" type="email" class="form-control" placeholder="Электронная почта"/>
@@ -21,7 +21,7 @@
 
                     <div class="form-group">
                         <div >
-                            <label for="input-full_name" class="label label-info">Ваше имя</label>
+                            <label for="input-full_name" class="label label-default">Ваше имя</label>
                         </div>
                         <div class="col-md-12">
                             <input id="input-full_name" name="full_name" type="text" required="true" class="form-control" placeholder="Ваше имя" />
@@ -29,13 +29,13 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="label label-info" for="input-password">Пароль</label>
+                        <label class="label label-default" for="input-password">Пароль</label>
                         <div class="col-md-12">
                             <input id="input-password" name="password" type="password" required="true" class="form-control" placeholder="Пароль" />
                         </div>
                     </div>
                     <div class="form-group pull-right">
-                        <input type="submit" value="Принять" class="btn btn-primary margin-top-large margin-right-small signin-btn-size"/>
+                        <input type="submit" value="Принять" class="btn btn-info margin-top-large margin-right-small signin-btn-size"/>
                     </div>
                 </form>
 

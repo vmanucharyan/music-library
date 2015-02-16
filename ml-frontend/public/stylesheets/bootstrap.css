@@ -2784,25 +2784,25 @@ select[multiple].form-group-lg .form-control {
 .has-success.checkbox label,
 .has-success.radio-inline label,
 .has-success.checkbox-inline label {
-  color: #4caf50;
+  color: #0d87e9;
 }
 .has-success .form-control {
-  border-color: #4caf50;
+  border-color: #0d87e9;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
 .has-success .form-control:focus {
-  border-color: #3d8b40;
+  border-color: #0d87e9;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #92cf94;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #92cf94;
 }
 .has-success .input-group-addon {
-  color: #4caf50;
-  border-color: #4caf50;
-  background-color: #dff0d8;
+  color: #0d87e9;
+  border-color: #0d87e9;
+  background-color: #0d87e9;
 }
 .has-success .form-control-feedback {
-  color: #4caf50;
+  color: #0d87e9;
 }
 .has-warning .help-block,
 .has-warning .control-label,
@@ -2814,7 +2814,7 @@ select[multiple].form-group-lg .form-control {
 .has-warning.checkbox label,
 .has-warning.radio-inline label,
 .has-warning.checkbox-inline label {
-  color: #ff9800;
+  color: #0d87e9;
 }
 .has-warning .form-control {
   border-color: #ff9800;
@@ -2827,9 +2827,9 @@ select[multiple].form-group-lg .form-control {
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #ffc166;
 }
 .has-warning .input-group-addon {
-  color: #ff9800;
-  border-color: #ff9800;
-  background-color: #ffe0b2;
+  color: #0d87e9;
+  border-color: #0d87e9;
+  background-color: #0d87e9;
 }
 .has-warning .form-control-feedback {
   color: #ff9800;
@@ -2844,7 +2844,7 @@ select[multiple].form-group-lg .form-control {
 .has-error.checkbox label,
 .has-error.radio-inline label,
 .has-error.checkbox-inline label {
-  color: #e51c23;
+  color: #0d87e9;
 }
 .has-error .form-control {
   border-color: #e51c23;
@@ -6571,14 +6571,14 @@ button.close {
   color: #fff;
 }
 .navbar-inverse .form-control::-moz-placeholder {
-  color: #b2dbfb;
+  color: #0d87e9;
   opacity: 1;
 }
 .navbar-inverse .form-control:-ms-input-placeholder {
-  color: #b2dbfb;
+  color: #0d87e9;
 }
 .navbar-inverse .form-control::-webkit-input-placeholder {
-  color: #b2dbfb;
+  color: #0d87e9;
 }
 .navbar-inverse .form-control[type=text] {
   -webkit-box-shadow: inset 0 -1px 0 #b2dbfb;
@@ -6991,7 +6991,7 @@ input[type="radio"]:before,
   position: absolute;
   left: 0;
   top: 0;
-  background-color: #2196f3;
+  background-color: #0d87e9;
   -webkit-transform: scale(0);
   -ms-transform: scale(0);
   -o-transform: scale(0);

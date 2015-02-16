@@ -1,7 +1,28 @@
 @import backends.Song
 
-@(songs: List[Song])(implicit request: SessionRequest)
+@(songs: List[Song], page: Int, pageLen: Int)(implicit request: SessionRequest)
 
-@main("Песни") {
-    
+@main("ТРЕКИ") {
+<div class="col-md-8 col-md-offset-2">
+    <div class="panel panel-info">
+    <div class="panel-heading">
+        <h3 class="panel-title">ТРЕКИ</h3>
+    </div>
+    <div class="list-group">
+    @for(song <- songs) {
+        <a href="@routes.Songs.id(song.id)" class="list-group-item">
+            <span>@{song.name}</span>
+            <span class="label label-default margin-left-large">@{"%d:%02d".format(song.durationSec / 60, song.durationSec % 60)}</span>
+        </a>
+    }
+    </div>
+    <div class="pull-right margin-top-small margin-right-small">
+        @if(page > 1) {
+            <a href="@{routes.Songs.all(page - 1)}" class="btn btn-default glyphicon glyphicon-chevron-left"></a>
+        } else {
+            <a href="#" class="btn btn-default glyphicon glyphicon-chevron-left"></a>
+        }
+        <a href="@{routes.Songs.all(page + 1)}" class="btn btn-info glyphicon glyphicon-chevron-right"><a>
+    </div>
+</div>
 }

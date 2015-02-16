@@ -2,12 +2,12 @@
 
 @main("sign in") {
     <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-primary">
+        <div class="panel panel-info">
             <div class="panel-heading">
-                ВХОД
+                <h3 class="panel-title">ВХОД</h3>
             </div>
 
-            <div class="panel-body margin-small">
+            <div class="panel-body">
 
                 <form action="@{routes.SignIn.performSignIn(redirectUri)}" method="POST" class="form-horizontal">
 
@@ -30,7 +30,7 @@
                     <div class="form-group">
                         <div class="pull-right margin-top-large margin-right-small">
                             <a href="/register" class="btn btn-default signin-btn-size">Регистрация</a>
-                            <input type="submit" value="Ок" class="btn btn-primary signin-btn-size"/>
+                            <input type="submit" value="Ок" class="btn btn-info signin-btn-size"/>
                         </div>
                     </div>
 

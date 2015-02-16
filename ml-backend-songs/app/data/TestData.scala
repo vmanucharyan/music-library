@@ -2,7 +2,7 @@ package data
 
 import models.Song
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 object TestData {
   def fill(): Unit = {
