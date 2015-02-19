@@ -5,21 +5,22 @@
 @main("Альбомы") {
 <div class="col-md-8 col-md-offset-2">
     <div class="panel panel-info">
-            <div class="panel-heading">
-                <h3 class="panel-title">АЛЬБОМЫ</h3>
-            </div>
-            <div class="list-group">
-            @for(album <- albums) {
-                <a href="@{routes.Albums.id(album.id)}" class="list-group-item">
-                    <h5 class="list-group-item-heading">@{album.name}</h5>
-                    <div>
-                        <span>
-                            <p class="list-group-item-text truncated">@{album.description}</p>
-                        </span>
-                    </div>
-                </a>
-            }
-            </div>
+
+        <div class="panel-heading">
+            <h3 class="panel-title">АЛЬБОМЫ</h3>
+        </div>
+
+        <div class="list-group">
+          @for(album <- albums) {
+            <a href="@{routes.Albums.id(album.id)}" class="list-group-item">
+              <h5 class="list-group-item-heading">@{album.name}</h5>
+              <div>
+                <span>
+                    <p class="list-group-item-text truncated">@{album.description}</p>
+                </span>
+              </div>
+            </a>
+          }
         </div>
     </div>
 </div>

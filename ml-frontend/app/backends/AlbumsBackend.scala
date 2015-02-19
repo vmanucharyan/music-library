@@ -8,7 +8,6 @@ import play.api.libs.functional.syntax._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
 class AlbumsBackend(val baseUrl: String) {
   implicit val albumReads : Reads[Album] = (
     (JsPath \ "name").read[String] and
@@ -29,7 +28,7 @@ class AlbumsBackend(val baseUrl: String) {
   def all(page: Int, pageLen: Int)(implicit app: Application, ec: ExecutionContext) : Future[List[Album]] =
     WS.url(s"$baseUrl/albums")
       .withQueryString("page" -> s"$page", "page_len" -> s"$pageLen")
-      .get() map { response => 
+      .get() map { response =>
         response.status match {
           case Status.OK => (response.json \ "values").as[List[Album]]
           case status => throw new AlbumsBackendException(s"unexpected status code ($status)")
@@ -53,6 +52,14 @@ class AlbumsBackend(val baseUrl: String) {
       }
     }
 
+  def albumExists(id: Long) (implicit app: Application, ec: ExecutionContext) : Future[Boolean] =
+    getAlbum(id)
+      .map(_ => true)
+      .recover {
+        case e: AlbumNotFoundException => false
+        case e: Exception => throw e
+      }
+
   def postAlbum(album: Album) (implicit app: Application, ec: ExecutionContext) : Future[Long] =
     WS.url(s"$baseUrl/albums/new").post(Json.toJson(album)) map { response =>
       response.status match {
@@ -74,7 +81,9 @@ class AlbumsBackend(val baseUrl: String) {
     WS.url(s"$baseUrl/albums/$id/delete").delete() map { response =>
       response.status match {
         case Status.OK => Unit
-        case status => throw new AlbumsBackendException(s"unexpected status code ($status)")
+        case status =>
+          val errorMessage = (response.json \ "error").as[String]
+          throw new AlbumsBackendException(s"unexpected status code ($status). error message: ${errorMessage}")
       }
     }
 }

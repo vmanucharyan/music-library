@@ -1,0 +1,48 @@
+@import backends.Song
+
+@(albumId: Long, artistId: Long)(implicit sessionRequest: SessionRequest)
+
+@main("Добавление трека") {
+<div class="col-md-6 col-md-offset-3">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">ДОБАВЛЕНИЕ ТРЕКА</h3>
+        </div>
+
+        <div class="panel-body margin-small">
+
+            <form action="@{routes.Songs.performAdd(albumId, artistId)}" method="POST" class="form-horizontal">
+                <div class="form-group">
+                    <div>
+                        <label for="input-name" class="label label-default">Название</label>
+                    </div>
+                    <div class="col-md-12">
+                        <input id="input-name" name="name" type="text" class="form-control" placeholder="Название трека"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div >
+                        <label for="input-genre" class="label label-default">Жанр</label>
+                    </div>
+                    <div class="col-md-12">
+                        <input id="input-genre" name="genre" type="text" required="true" class="form-control" placeholder="Жанр трека" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="label label-default" for="input-duration">Длительность</label>
+                    <div class="col-md-12">
+                        <input id="input-duration" name="duration" type="number" required="true" class="form-control" placeholder="Длительность (сек)" />
+                    </div>
+                </div>
+
+                <div class="form-group pull-right">
+                    <input type="submit" value="Принять" class="btn btn-info margin-top-large margin-right-small signin-btn-size"/>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+}

@@ -64,7 +64,7 @@ class SongsBackend(val baseUrl: String) {
     }
 
   def deleteSong(id: Long) (implicit app: Application, ec: ExecutionContext) : Future[Unit] =
-    WS.url(s"$baseUrl/song/$id/delete").delete() map { response =>
+    WS.url(s"$baseUrl/songs/$id/delete").delete() map { response =>
       response.status match {
         case Status.OK => Unit
         case status => throw new SongsBackendException(s"unexpected status code ($status)")

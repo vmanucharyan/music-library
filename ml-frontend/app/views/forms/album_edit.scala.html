@@ -1,0 +1,60 @@
+@import backends.Album
+
+@(id: Long, album: Album)(implicit request: SessionRequest)
+
+@main("РЕДАКТИРОВАНИЕ АЛЬБОМА") {
+
+<div class="col-md-8 col-md-offset-2">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+          <h3 class="panel-title">@{album.name}</h3>
+        </div>
+        <div class="panel-body">
+            <form action="@{routes.Albums.performEdit(id)}" method="POST">
+
+                <div class="form-group">
+                    <div>
+                        <label for="input-name" class="label label-default">Название</label>
+                    </div>
+                    <div class="col-md-12">
+                        <input id="input-name" name="name" type="text" class="form-control" placeholder="Название альбома" value="@{album.name}"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div>
+                        <label for="input-description" class="label label-default">Описание</label>
+                    </div>
+                    <div class="col-md-12">
+                        <input id="input-description" name="description" type="text" class="form-control" placeholder="Описание" value="@{album.description}"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div>
+                        <label for="input-year" class="label label-default">Год</label>
+                    </div>
+                    <div class="col-md-12">
+                        <input id="input-year" name="year" type="number" class="form-control" placeholder="Год" value="@{album.year}"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div>
+                        <label for="input-artist-id" class="label label-default">Исполнитель</label>
+                    </div>
+                    <div class="col-md-12">
+                        <input id="input-artist-id" name="artist-id" type="number" class="form-control" placeholder="Идентификатор исполнителя" value="@{album.artistId}"/>
+                    </div>
+                </div>
+
+                <div class="form-group pull-right">
+                    <input type="submit" value="Принять" class="btn btn-info margin-top-large margin-right-small signin-btn-size"/>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+}

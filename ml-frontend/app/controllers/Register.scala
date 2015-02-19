@@ -7,7 +7,7 @@ import play.api.data._
 import play.api.mvc._
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 object Register extends Controller {
   def register = SessionAction { implicit request =>

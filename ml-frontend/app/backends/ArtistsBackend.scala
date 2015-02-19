@@ -30,11 +30,19 @@ class ArtistsBackend(val baseUrl: String) {
       }
     }
 
+  def artistExists(id: Long)(implicit app: Application, ec: ExecutionContext) : Future[Boolean] =
+    getArtist(id)
+      .map(_ => true)
+      .recover {
+        case e: ArtistsNotFoundException => false
+        case e => throw e
+      }
+
   def postArtist(artist: Artist) (implicit app: Application, ec: ExecutionContext) : Future[Long] =
     WS.url(s"$baseUrl/artists/new").post(Json.toJson(artist)) map { response =>
       response.status match {
         case Status.OK => (response.json \ "id").as[Long]
-        case status => 
+        case status =>
           val errorMessage = (response.json \ "error").as[String]
           throw new ArtistsBackendException("failed to create artist.")
       }

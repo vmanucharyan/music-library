@@ -11,6 +11,15 @@
 
 <div class="col-md-7">
     <div class="jumbotron">
+        <div class="pull-right">
+            <a href="@{routes.Albums.edit(album.id)}" class="btn btn-default">
+                <span class="glyphicon glyphicon-pencil"></span>
+            </a>
+            <a href="@{routes.Albums.delete(album.id)}" class="btn btn-danger">
+                <span class="glyphicon glyphicon-remove"></span>
+            </a>
+        </div>
+
         <h2>@{album.name}</h2>
         <p>@{album.description}</p>
         <small class="pull-right">Википедия - свободная энциклопедия</small>
@@ -32,17 +41,23 @@
                         <span class="label label-default">@{"%d:%02d".format(song.durationSec / 60, song.durationSec % 60)}</span>
                     </div>
                     <div class="col-md-6 col-xs-6">
-                        <span class="pull-right">
-                            <span class="label label-default">@{album.name}</span>
-                            <span class="label label-default">@{artist.name}</span>
-                        </span>
+                      <span class="pull-right">
+                        <span class="label label-info">@{artist.name}</span>
+                        <span class="label label-info">@{album.name}</span>
+                      </span>
                     </div>
                 </div>
             </a>
         }
         </div>
+
+        <div class="pull-right margin-top-small margin-right-small">
+            <a href="@{routes.Songs.newSong(album.id, artist.id)}" class="btn btn-success">
+                <span class="glyphicon glyphicon-plus"></span>
+            </a>
+        </div>
+
     </div>
 
 </div>
-
 }

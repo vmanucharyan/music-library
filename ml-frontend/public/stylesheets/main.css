@@ -84,3 +84,20 @@
 .signin-btn-size {
     width: 125px;
 }
+
+.btn-add {
+  color: #ffffff;
+  background-color: #4CAF50;
+  border-color: transparent;
+}
+
+.btn-add:hover,
+.btn-add:focus,
+.btn-add.focus,
+.btn-add:active,
+.btn-add.active,
+.open > .dropdown-toggle.btn-add {
+  color: #ffffff;
+  background-color: #1B5E20;
+  border-color: rgba(0, 0, 0, 0);
+}

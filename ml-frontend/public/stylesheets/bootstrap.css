@@ -2844,7 +2844,7 @@ select[multiple].form-group-lg .form-control {
 .has-error.checkbox label,
 .has-error.radio-inline label,
 .has-error.checkbox-inline label {
-  color: #0d87e9;
+  color: #e51c23;
 }
 .has-error .form-control {
   border-color: #e51c23;

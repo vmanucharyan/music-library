@@ -1,12 +1,15 @@
 package controllers
 
-import data.DataProvider
-import models.Album
 import play.api.libs.json._
 import play.api.mvc._
 import play.api.libs.functional.syntax._
 
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+
+import scala.util.Try
+
+import data.DataProvider
+import models.Album
 
 object Albums extends Controller {
   val DefaultPageLen = 2
@@ -79,8 +82,10 @@ object Albums extends Controller {
   }
 
   def delete(id: Long) = Action {
-    DataProvider.delete(id)
-    Ok(Json.obj("message" -> "success"))
+    Try {
+      DataProvider.delete(id)
+      Ok(Json.obj("message" -> "success"))
+    } getOrElse InternalServerError(Json.obj("error" -> s"failed to delete album with id $id"))
   }
 
   def ofArtist(artistId: Long) = Action.async { implicit request =>

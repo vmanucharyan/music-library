@@ -1,0 +1,42 @@
+@import backends.Album
+
+@()(implicit request: SessionRequest)
+
+@main("Добавление исполнителя") {
+
+<div class="col-md-8 col-md-offset-2">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+          <h3 class="panel-title">ДОБАВЛЕНИЕ ИСПОЛНИТЕЛЯ</h3>
+        </div>
+        <div class="panel-body">
+            <form action="@{routes.Artists.performAdd()}" method="POST">
+
+                <div class="form-group">
+                    <div>
+                        <label for="input-name" class="label label-default">Имя</label>
+                    </div>
+                    <div class="col-md-12">
+                        <input id="input-name" name="name" type="text" class="form-control" placeholder="Название группы / имя исполнителя"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div>
+                        <label for="input-description" class="label label-default">Описание</label>
+                    </div>
+                    <div class="col-md-12">
+                        <input id="input-description" name="description" type="text" class="form-control" placeholder="Описание"/>
+                    </div>
+                </div>
+
+                <div class="form-group pull-right">
+                    <input type="submit" value="Принять" class="btn btn-info margin-top-large margin-right-small signin-btn-size"/>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+}

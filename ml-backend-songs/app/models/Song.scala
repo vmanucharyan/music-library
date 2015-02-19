@@ -19,11 +19,5 @@ class SongsTable(tag: Tag) extends Table[Song](tag, "SONGS") {
   def artistId = column[Long]("artist_id")
   def id = column[Long]("id", O.AutoInc, O.PrimaryKey)
 
-  def albumFk = foreignKey("album_fk", albumId, TableQuery[SongsTable])(a => a.id)
-
   def * = (name, genre, durationSec, albumId, artistId, id) <> (Song.tupled, Song.unapply)
-}
-
-object Songs {
-  
 }

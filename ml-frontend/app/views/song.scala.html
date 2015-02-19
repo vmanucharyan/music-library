@@ -1,7 +1,26 @@
-@import backends.Song
+@import backends.{Song, Artist, Album}
 
-@(song: Song)(implicit request: SessionRequest)
+@(song: Song, album: Album, artist: Artist)(implicit request: SessionRequest)
 
 @main(song.name) {
-    
+
+<ul class="breadcrumb">
+    <li><a href="@{routes.Artists.id(artist.id)}">@{artist.name}</a></li>
+    <li><a href="@{routes.Albums.id(album.id)}">@{album.name}</a></li>
+    <li class="active">@{song.name}</li>
+</ul>
+
+<div class="jumbotron">
+  <h1>@{song.name}</h1>
+  <p>Исполнитель: @{artist.name}</p>
+  <p>Альбом: @{album.name}</p>
+  <p>Продолжительность: @{"%d:%02d".format(song.durationSec / 60, song.durationSec % 60)}</p>
+  <p>Жанр: @{song.genre}</p>
+</div>
+
+<div class="margin-top-large">
+  <a href="@{routes.Songs.editSong(song.id)}" class="btn btn-default">Редактировать</a>
+  <a href="@{routes.Songs.deleteSong(song.id)}" class="btn btn-danger margin-left-small">Удалить</a>
+</div>
+
 }

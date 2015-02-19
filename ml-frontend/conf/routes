@@ -27,14 +27,31 @@ GET         /albums_test                      controllers.Application.albumTest
 GET         /artists_test                     controllers.Application.artistTest
 GET         /songs_test                       controllers.Application.songsTest
 
-# data
+# albums
 GET         /albums                           controllers.Albums.all(page: Int ?= 1, page_len: Int ?= 4)
+POST        /albums/perform_edit              controllers.Albums.performEdit(id: Long)
+POST        /albums/perform_add               controllers.Albums.performAdd(artist_id: Long)
+GET         /albums//add                      controllers.Albums.add(artist_id: Long)
 GET         /albums/:id                       controllers.Albums.id(id: Long)
+GET         /albums/:id/edit                  controllers.Albums.edit(id: Long)
+GET         /albums/:id/delete                controllers.Albums.delete(id: Long)
+DELETE      /albums/:id/delete                controllers.Albums.delete(id: Long)
 
 # artists
 GET         /artists                          controllers.Artists.all()
+GET         /artists/add                      controllers.Artists.add()
+GET         /artists/edit                     controllers.Artists.edit(id: Long)
 GET         /artists/:id                      controllers.Artists.id(id: Long)
+POST        /artists/perform_add              controllers.Artists.performAdd()
+POST        /artists/perform_edit             controllers.Artists.performEdit(id: Long)
 
 # songs
 GET         /songs                            controllers.Songs.all(page: Int ?= 1, page_len: Int ?= 4)
+GET         /songs/new                        controllers.Songs.newSong(album_id: Long, artist_id: Long)
+POST        /songs/perform_add                controllers.Songs.performAdd(album_id: Long, artist_id: Long)
+GET         /songs/edit                       controllers.Songs.editSong(id: Long)
+POST         /songs/perform_edit               controllers.Songs.performEdit(id: Long)
+PUT         /songs/perform_edit               controllers.Songs.performEdit(id: Long)
+GET         /songs/:id/delete                 controllers.Songs.deleteSong(id: Long)
+DELETE      /songs/:id/delete                 controllers.Songs.deleteSong(id: Long)
 GET         /songs/:id                        controllers.Songs.id(id: Long)

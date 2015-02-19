@@ -31,10 +31,9 @@ object Songs extends Controller {
   ) (Song.apply _)
 
   def all(page: Option[Int], pageLen: Option[Int]) = Action.async {
-    val songsFuture = page match {
-      case Some(pageValue) => DataProvider.getAllSongs((pageValue - 1) * pageLen.getOrElse(DefaultPageLen), pageLen.getOrElse(DefaultPageLen))
-      case None => DataProvider.getAllSongs()
-    }
+    val songsFuture = page map { pageValue =>
+      DataProvider.getAllSongs((pageValue - 1) * pageLen.getOrElse(DefaultPageLen), pageLen.getOrElse(DefaultPageLen))
+    } getOrElse(DataProvider.getAllSongs())
 
     songsFuture map { songs =>
       val currPage: Int = page.getOrElse(1)
@@ -45,6 +44,8 @@ object Songs extends Controller {
         "page_len" -> count,
         "values" -> songs
       )))
+    } recover {
+      case e: Exception => InternalServerError(Json.obj("error" -> e.getMessage))
     }
   }
 
