@@ -70,6 +70,9 @@ class SongsBackend(val baseUrl: String) {
         case status => throw new SongsBackendException(s"unexpected status code ($status)")
       }
     }
+
+  def countSongsOfArtist(artistId: Long)(implicit app: Application, ec: ExecutionContext) : Future[Int] =
+    songsOfArtist(artistId).map(songs => songs.length)
 }
 
 case class Song (

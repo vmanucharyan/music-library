@@ -86,6 +86,9 @@ class AlbumsBackend(val baseUrl: String) {
           throw new AlbumsBackendException(s"unexpected status code ($status). error message: ${errorMessage}")
       }
     }
+
+  def countArtistsAlbums(albumId: Long)(implicit app: Application, ec: ExecutionContext) : Future[Int] =
+    getArtistsAlbums(albumId).map(albums => albums.length)
 }
 
 case class Album(

@@ -86,13 +86,25 @@ object Artists extends Controller {
     form.value.map {
       case (name, description) =>
         val artist = Artist(name, description)
-        Backends.artists.postArtist(artist).map(newArtistId => Redirect(routes.Artists.id(newArtistId)))
+        Backends.artists.editArtist(id, artist).map(_ => Redirect(routes.Artists.id(id)))
     } getOrElse {
       val errString =
         if (form.hasErrors) form.errors.map(err => s"${err.key} : ${err.message}").mkString(";")
         else "Invalid form"
 
       Future(BadRequest(views.html.static_pages.error_page("BAD REQUEST", errString)))
+    }
+  }
+
+  def delete(id: Long) = ProtectedAction { implicit request =>
+    Backends.albums.countArtistsAlbums(id) flatMap { albumsCount =>
+      Backends.songs.countSongsOfArtist(id) flatMap { songsCount =>
+        if (albumsCount == 0 && songsCount == 0)
+          Backends.artists.deleteArtist(id).map { _ =>
+            Redirect(routes.Artists.all())
+          }
+        else Future(InternalServerError(views.html.static_pages.error_page("ERROR", "Cannot delete artist since there are still songs or albums referencing it")))
+      }
     }
   }
 }

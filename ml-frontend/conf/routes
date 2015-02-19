@@ -42,6 +42,8 @@ GET         /artists                          controllers.Artists.all()
 GET         /artists/add                      controllers.Artists.add()
 GET         /artists/edit                     controllers.Artists.edit(id: Long)
 GET         /artists/:id                      controllers.Artists.id(id: Long)
+GET         /artist/:id/delete                controllers.Artists.delete(id: Long)
+DELETE      /artists/:id/delete               controllers.Artists.delete(id: Long)
 POST        /artists/perform_add              controllers.Artists.performAdd()
 POST        /artists/perform_edit             controllers.Artists.performEdit(id: Long)
 
